@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="../js/jquery-3.6.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+<body>
+    <header id="menu"></header>
+    <a class="btn btn-danger" id="volver">Volver</a>
+    <table id="tabla">
+        <thead>
+            <tr>
+                <th>APELLIDO</th>
+                <th>IMAGEN</th>
+                <th>DETALLES</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+<script>
+    var urlChampions = "https://apichampions.azurewebsites.net";
+    $(document).ready(function(){
+        $("#menu").load("menu.html")
+        cargarJugadores();
+    })
+
+    const parameters = new URLSearchParams(window.location.search);
+    
+    function cargarJugadores(){
+        var idEquipo = parameters.get("idEquipo");
+        console.log(idEquipo)
+        var request="/api/Jugadores/JugadoresEquipo/"+idEquipo;
+       
+        $.ajax({
+            "url":urlChampions+request,
+            "method":"GET",
+            "dataType":"json",
+            success:function(data){
+
+                $.each(data,function(index,jugador){
+                    var tr=$("<tr>");
+                    var td=$("<td>",{"text":jugador.nombre});
+                    
+                    var tdImg=$("<img>",{
+                        "src":jugador.imagen
+                    })
+                    var tdBt=$("<a>",{
+                        "class":"btn btn-warning",
+                        "href":"DetallesJugador.html?idJugador="+jugador.idJugador,
+                        "text":"Detalles"
+                    })
+                    
+                    tr.append(td,tdImg,tdBt);
+                    $("#tabla tbody").append(tr);
+                })
+                $("#volver").attr("href","Equipos.html?idEquipo="+idEquipo);
+            }
+        })
+    }
+</script>
+
+</html>

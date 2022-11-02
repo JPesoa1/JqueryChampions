@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="../js/jquery-3.6.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+<body>
+    <header id="menu"></header>
+    <h1 id="nombre"></h1><br/>
+    <img id="imagen"/>
+    <h2 id="posicion"></h2><br/>
+    <h2 id="pais"></h2>
+    <div id="caja">
+
+    </div>
+</body>
+<script>
+    var urlChampions = "https://apichampions.azurewebsites.net";
+    $(document).ready(function(){
+        $("#menu").load("menu.html");
+        cargarDetalle();
+    });
+
+    const parameters= new URLSearchParams(window.location.search);
+    function cargarDetalle(){
+        var idJugador=parameters.get("idJugador");
+        var request="/api/Jugadores/";
+
+        $.ajax({
+            "url":urlChampions+request+idJugador,
+            "method":"GET",
+            "dataType":"json",
+            success:function(data){
+                $("#nombre").text(data.nombre);
+                $("#imagen").attr("src",data.imagen);
+                $("#posicion").text(data.posicion)
+                $("#pais").text(data.pais);
+                var bt=$("<a>",{
+                    "text":"Jugadores",
+                    "class":"btn btn-danger",
+                    "href":"Jugadores.html?idEquipo="+data.idEquipo
+                })
+                $("#caja").append(bt);
+            }
+        })
+
+    }
+</script>
+</html>

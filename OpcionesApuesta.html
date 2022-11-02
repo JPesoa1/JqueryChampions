@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header id="menu"></header>
+    <div style="margin-left: 300px;padding: 50px;" id="caja">
+        
+    </div>
+</body>
+<script src="js/jquery-3.6.1.min.js"></script>
+<script>
+    var urlChampions = "https://apichampions.azurewebsites.net";
+    var parameters=new URLSearchParams(window.location.search);
+    const idApuesta = parameters.get("idApuesta");
+  $(document).ready(function(){
+    $("#menu").load("menu.html");
+    cargarOpcion();
+  });
+  
+
+  function cargarOpcion(){
+    var opcion=parameters.get("opcion");
+    switch(opcion){
+        case "1":
+            insertar();
+        break;
+        case "2":
+            modificar();
+        break;
+        case "3":
+            confirmarBorrar();
+        break;
+    }
+  }
+  function confirmarBorrar(){
+    var button=$("<button>",{
+        "text":"confirmar",
+        "onclick":"borrar()"
+    })
+    $("#caja").append(button)
+  }
+
+  function borrar(){
+    var request="/api/Apuestas/";
+
+    $.ajax({
+         "url":urlChampions+request+idApuesta,
+         "method":"DELETE",
+        
+        "contentType":"application/json",
+         success:function(){
+             console.log("Realizado");
+             window.location.replace("apuestas.html");
+         }
+
+     })
+  }
+
+  function modificar(){
+
+  }
+  function insertar(){
+    var forma= $("<form>", {
+      'class' : "border rounded w-75 mx-auto mt-1 text-center",
+       'onSubmit' : "apostar();return false;"
+    });
+
+    var br=$("<br>");
+    var br2=$("<br>");
+
+    var labelUsuario=$("<label>",{"text":"Usuario"});
+    var inputUsuario=$("<input>",{"type":"text","id":"idUsuario"});
+    
+    var labelApuesta=$("<label>",{"text":"Apuesta"});
+    var inputApuesta=$("<input>",{"type":"text","id":"idApuesta"});
+
+    var labelFecha=$("<label>",{"text":"Fecha"});
+    var inputFecha=$("<input>",{"type":"text","id":"idFecha"});
+    var bt=$("<button>",{"text":"Apostar"})
+    
+    forma.append(labelUsuario,inputUsuario,br,labelApuesta,inputApuesta,br2,labelFecha,inputFecha,bt);
+    $("#caja").append(forma);
+  }
+
+  function apostar(){
+   
+    
+     var request="/api/Apuestas";
+
+     var user =$("#idUsuario").val();
+     var apues = $("#idApuesta").val();
+     var date=$("#idFecha").val();
+     console.log(user)
+     var opcion=parameters.get("opcion");
+
+     const apuesta = {
+         "idApuesta": parseInt(opcion),
+         "usuario": user,
+         "resultado": apues,
+         "fecha": date
+     }
+     const myJson = JSON.stringify(apuesta);
+     
+     $.ajax({
+         "url":urlChampions+request,
+         "method":"POST",
+         "data":myJson,
+        "contentType":"application/json",
+         success:function(){
+             console.log("Realizado");
+             window.location.replace("apuestas.html");
+         }
+
+     })
+
+
+  }
+
+</script>
+</html>

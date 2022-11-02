@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header id="menu"></header>
+    <a id="btn" class="btn btn-danger">Realizar apuesta</a>
+    <table  class="table table-success table-striped" id="tabla" style="margin: 0 auto;" border="2" >
+        <thead>
+            <tr>
+                <th>USUARIO</th>
+                <th>RESULTADO</th>
+                <th>FECHA</th>
+                <th>MODIFICAR</th>
+                <th>ELIMINAR</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+<script src="js/jquery-3.6.1.min.js"></script>
+
+<script>
+    var urlChampions = "https://apichampions.azurewebsites.net";
+    $(document).ready(function(){
+        $("#menu").load("menu.html");
+        cargarApuestas();
+    });
+    function cargarApuestas(){
+        var request="/api/Apuestas";
+        $.ajax({
+            "url":urlChampions+request,
+            "method":"GET",
+            "dataType":"json",
+            success:function(data){
+                
+                $.each(data,function(index,apuesta){
+                    var tr=$("<tr>");
+                    var tdUsu=$("<td>",{
+                        "text":apuesta.usuario
+                    })
+                    var tdRes=$("<td>",{
+                        "text":apuesta.resultado
+                    })
+
+                    var tdFech=$("<td>",{
+                        "text":apuesta.fecha
+                    })
+
+                    var tdMod=$("<td>")
+                        btMod=$("<a>",{
+                            "text":"Modificar",
+                            "href":"OpcionesApuesta.html?opcion=2&idApuesta="+apuesta.idApuesta
+                        })
+                    tdMod.append(btMod);
+
+                    var tdElim=$("<td>")
+                    btMod=$("<a>",{
+                        "text":"Eliminar",
+                        "href":"OpcionesApuesta.html?opcion=3&idApuesta="+apuesta.idApuesta
+                    })
+                    tdElim.append(btMod);    
+
+
+                    tr.append(tdUsu,tdRes,tdFech,tdMod,tdElim);
+                    $("#tabla").append(tr);
+                })
+                $("#btn").attr("href","OpcionesApuesta.html?opcion="+1);
+            }
+        })
+    }
+</script>
+</html>
